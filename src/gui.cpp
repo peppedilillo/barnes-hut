@@ -94,7 +94,7 @@ void DotWindow::paintEvent(QPaintEvent *) {
 #endif
     QPainter painter(this);
     drawParticles(painter, qt.particles);
-    //drawQuadtree(painter, {{0,            0},{window_width, window_height}}, qt.root);
+    drawQuadtree(painter, {{0,            0},{window_width, window_height}}, qt.root);
 #ifdef DEBUG
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);

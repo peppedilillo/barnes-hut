@@ -11,8 +11,7 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    // Seed the random number generator
-    //std::mt19937 rng(static_cast<unsigned>(42));
+    std::mt19937 rng(static_cast<unsigned>(42));
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> distRadius(0., 0.3);
