@@ -11,6 +11,7 @@
 #include <QLabel>
 
 #include "quadtree.h"
+#include "physics.h"
 
 
 class DotWindow : public QMainWindow {
@@ -20,17 +21,14 @@ public:
     static constexpr qreal window_width = 800;
     static constexpr qreal window_height = 800;
     static constexpr qreal dt_refresh = 16;
-    using UpdateFunction = std::function<void(Quadtree &)>;
 
-    DotWindow(Quadtree &qt, UpdateFunction updateFunc, QWidget *parent = nullptr);
+    explicit DotWindow(Quadtree &qt, QWidget *parent = nullptr);
 
 private slots:
-
     void updateParticle();
 
 private:
     Quadtree qt;
-    std::function<void(Quadtree &)> &&updateFunction;
     qreal zoom = 1.0;
     qreal half_width = window_width / 2;
     qreal half_height = window_height / 2;

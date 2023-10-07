@@ -6,10 +6,30 @@
 
 #include "gui.h"
 
-DotWindow::DotWindow(Quadtree &qt, UpdateFunction updateFunc, QWidget *parent) :
+
+void DotWindow::updateParticle() {
+#ifdef DEBUG
+    auto startTime = std::chrono::high_resolution_clock::now();
+#endif
+    integrate(qt);
+#ifdef DEBUG
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    std::cout << "Elapsed time during integration: " << duration.count() << " microseconds" << std::endl;
+    startTime = std::chrono::high_resolution_clock::now();
+#endif
+    qt = build(qt.particles);
+#ifdef DEBUG
+    endTime = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    std::cout << "Elapsed time during quadtree update: " << duration.count() << " microseconds" << std::endl;
+#endif
+    update();
+}
+
+DotWindow::DotWindow(Quadtree &qt, QWidget *parent) :
         QMainWindow(parent),
-        qt(qt),
-        updateFunction(std::move(updateFunc)) {
+        qt(qt) {
     setWindowTitle("Particle Simulator");
     setStyleSheet("QMainWindow {background: 'black';}");
     setFixedSize(QSize(window_width, window_height));
@@ -20,11 +40,6 @@ DotWindow::DotWindow(Quadtree &qt, UpdateFunction updateFunc, QWidget *parent) :
     auto *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateParticle()));
     timer->start(dt_refresh); // ms (16 = 60 FPS)
-}
-
-void DotWindow::updateParticle() {
-    updateFunction(qt);
-    update();
 }
 
 QPointF DotWindow::particleToPixel(const Particle &p) const {
@@ -38,7 +53,7 @@ void DotWindow::drawParticles(QPainter &painter, const std::vector<Particle> &pa
     painter.setPen(Qt::white);
     for (const auto &particle: particles) {
         QPointF point = particleToPixel(particle);
-        if (point.x() > 0 && point.x() < window_width && point.y() > 0 && point.x() < window_height) {
+        if (point.x() > 0 && point.x() < window_width && point.y() > 0 && point.y() < window_height) {
             painter.drawEllipse(point.x(), point.y(), 1, 1);
         }
     }

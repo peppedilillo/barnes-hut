@@ -45,27 +45,8 @@ int main(int argc, char *argv[]) {
         particles.push_back(p);
     }
 
-    auto updateFunc = [](Quadtree &qt) {
-#ifdef DEBUG
-        auto startTime = std::chrono::high_resolution_clock::now();
-#endif
-        integrate(qt);
-#ifdef DEBUG
-        auto endTime = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-        std::cout << "Elapsed time during integration: " << duration.count() << " microseconds" << std::endl;
-        startTime = std::chrono::high_resolution_clock::now();
-#endif
-        qt = build(qt.particles);
-#ifdef DEBUG
-        endTime = std::chrono::high_resolution_clock::now();
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-        std::cout << "Elapsed time during quadtree update: " << duration.count() << " microseconds" << std::endl;
-#endif
-    };
-
     Quadtree qt = build(particles);
-    DotWindow window(qt, updateFunc);
+    DotWindow window(qt);
     window.show();
 
     return app.exec();
