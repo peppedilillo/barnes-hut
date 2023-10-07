@@ -1,3 +1,5 @@
 cmake-build-debug/
 cmake-build-release/
+elements/
 .idea/
+.DS_Store
